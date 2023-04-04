@@ -1,7 +1,7 @@
 from .utils import RomsData
 from .bmi import BmiRoms
 from .errors import RomsError, DataError
-from ._version import get_versions
+# from ._version import get_versions
 
 __all__ = ["RomsData",
            "BmiRoms",
@@ -9,5 +9,5 @@ __all__ = ["RomsData",
            "RomsError"
            ]
 
-__version__ = get_versions()['version']
-del get_versions
+# __version__ = get_versions()['version']
+# del get_versions
