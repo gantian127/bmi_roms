@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="bmi_roms",
-    version='beta0.1',
+    version='0.0.1',
     #version=versioneer.get_version(),
     #cmdclass=versioneer.get_cmdclass(),
     author="Tian Gan",
