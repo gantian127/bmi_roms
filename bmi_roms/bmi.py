@@ -15,7 +15,7 @@ BmiVar = namedtuple(
 )
 
 BmiGridRectilinear = namedtuple(
-    "BmiGridRectilinear", ["shape", "yx_spacing", "yx_of_lower_left", 'grid_x', 'grid_y', 'grid_z']
+    "BmiGridRectilinear", ["shape", "grid_spacing", "grid_origin", 'grid_x', 'grid_y', 'grid_z']
 )
 
 
@@ -200,7 +200,7 @@ class BmiRoms(Bmi):
             The input numpy array that holds the coordinates of the grid's
             lower-left corner.
         """
-        origin[:] = self._grid[grid].yx_of_lower_left
+        origin[:] = self._grid[grid].grid_origin
         return origin
 
     def get_grid_rank(self, grid: int) -> int:
@@ -260,7 +260,7 @@ class BmiRoms(Bmi):
         ndarray of float
             The input numpy array that holds the grid's spacing.
         """
-        spacing[:] = self._grid[grid].yx_spacing
+        spacing[:] = self._grid[grid].grid_spacing
 
         return spacing
 
@@ -623,8 +623,8 @@ class BmiRoms(Bmi):
         for grid_id, info in grid_info.items():
             self._grid[grid_id] = BmiGridRectilinear(
                 shape=info['shape'],
-                yx_spacing=info['yx_spacing'],
-                yx_of_lower_left=info['yx_of_lower_left'],
+                grid_spacing=info['grid_spacing'],
+                grid_origin=info['grid_origin'],
                 grid_x=info['grid_x'],
                 grid_y=info['grid_y'],
                 grid_z=info['grid_z'],

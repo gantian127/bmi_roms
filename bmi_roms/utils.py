@@ -83,8 +83,12 @@ class RomsData:
                 grid_info[index] = {
                     # suppose var is 3 or 4 dim and exclude time dimension to get shape info
                     'shape': tuple([self.data.dims[dim_name] for dim_name in dim[1:]]),
-                    'yx_spacing': (dim_info[y_name]['spacing_y'], dim_info[x_name]['spacing_x']),
-                    'yx_of_lower_left': (dim_info[y_name]['lower_left_y'], dim_info[x_name]['lower_left_x']),
+                    'grid_spacing': (dim_info[y_name]['spacing_y'], dim_info[x_name]['spacing_x']) if z_name is None else
+                                    (dim_info[z_name]['spacing_z'], dim_info[y_name]['spacing_y'],
+                                     dim_info[x_name]['spacing_x']),
+                    'grid_origin': (dim_info[y_name]['origin_y'], dim_info[x_name]['origin_x']) if z_name is None else
+                                   (dim_info[z_name]['origin_z'], dim_info[y_name]['origin_y'],
+                                    dim_info[x_name]['origin_x']),
                     'grid_x': dim_info[x_name]['grid_x'],
                     'grid_y': dim_info[y_name]['grid_y'],
                     'grid_z': dim_info[z_name]['grid_z'] if z_name is not None else 0,
@@ -173,8 +177,11 @@ class RomsData:
             dim_info = {}
             for dim_name in dim_list:
                 if 's_' in dim_name:  # TODO: get actual s_rho and s_w values, current value is layer numer
+                    grid_z = np.arange(1, self._data.dims[dim_name]+1, dtype=float)
                     dim_info[dim_name] = {
-                        'grid_z': np.arange(1, self._data.dims[dim_name]+1, dtype=float),  # value represent layer number
+                        'grid_z': grid_z,
+                        'origin_z': grid_z[0],
+                        'spacing_z': grid_z[1]-grid_z[0],
                     }
 
                 elif 'xi_' in dim_name:  # TODO: get correct lon_u,v,rho values, current value is grid index number
@@ -183,14 +190,14 @@ class RomsData:
                         grid_x = self._data.data_vars[coor_var].values[0, :]
                         dim_info[dim_name] = {
                             'grid_x': grid_x,
-                            'lower_left_x': grid_x[0],
+                            'origin_x': grid_x[0],
                             'spacing_x': grid_x[1] - grid_x[0],
                         }
                     elif dim_name.replace('xi', 'lon') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('xi', 'lon')
                         dim_info[dim_name] = {
                             'grid_x': np.arange(1, self._data.data_vars[coor_var].shape[1]+1, dtype=float),
-                            'lower_left_x': 1.0,
+                            'origin_x': 1.0,
                             'spacing_x': 1.0,
                         }
 
@@ -200,7 +207,7 @@ class RomsData:
                         grid_y = self._data.data_vars[coor_var].values[:, 0]
                         dim_info[dim_name] = {
                             'grid_y': grid_y,
-                            'lower_left_y': grid_y[0],
+                            'origin_y': grid_y[0],
                             'spacing_y': grid_y[1] - grid_y[0],
                         }
 
@@ -208,13 +215,17 @@ class RomsData:
                         coor_var = dim_name.replace('eta', 'lat')
                         dim_info[dim_name] = {
                             'grid_y': np.arange(1, self._data.data_vars[coor_var].shape[0]+1, dtype=float),
-                            'lower_left_y': 1.0,
+                            'origin_y': 1.0,
                             'spacing_y': 1.0,
                         }
 
                 elif 'Nbed' == dim_name:  # TODO: need to get actual Nbed values, current value is layer number
+                    grid_z = np.arange(1, self._data.dims['Nbed']+1, dtype=float)
                     dim_info[dim_name] = {
-                        'grid_z': np.arange(1, self._data.dims['Nbed']+1, dtype=float),  # value represent layer number
+                        'grid_z': grid_z,  # value represent layer number
+                        'origin_z': grid_z[0],
+                        'spacing_z': grid_z[1]-grid_z[0],
+
                     }
 
             self._dim_info = dim_info
