@@ -87,7 +87,7 @@ class RomsData:
                     'yx_of_lower_left': (dim_info[y_name]['lower_left_y'], dim_info[x_name]['lower_left_x']),
                     'grid_x': dim_info[x_name]['grid_x'],
                     'grid_y': dim_info[y_name]['grid_y'],
-                    'grid_z': dim_info[z_name]['grid_z'] if z_name is not None else np.empty(0),
+                    'grid_z': dim_info[z_name]['grid_z'] if z_name is not None else 0,
                 }
 
             self._grid_info = grid_info
@@ -189,7 +189,7 @@ class RomsData:
                     elif dim_name.replace('xi', 'lon') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('xi', 'lon')
                         dim_info[dim_name] = {
-                            'grid_x': np.arange(1, self._data.data_vars[coor_var].shape[0]+1, dtype=float),
+                            'grid_x': np.arange(1, self._data.data_vars[coor_var].shape[1]+1, dtype=float),
                             'lower_left_x': 1.0,
                             'spacing_x': 1.0,
                         }
