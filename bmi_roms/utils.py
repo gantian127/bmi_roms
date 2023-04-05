@@ -172,12 +172,12 @@ class RomsData:
         if dim_list:
             dim_info = {}
             for dim_name in dim_list:
-                if 's_' in dim_name:  # TODO: need to deal with the actual s_rho and s_w values
+                if 's_' in dim_name:  # TODO: get actual s_rho and s_w values, current value is layer numer
                     dim_info[dim_name] = {
                         'grid_z': np.arange(1, self._data.dims[dim_name]+1, dtype=float),  # value represent layer number
                     }
 
-                elif 'xi_' in dim_name:  # TODO: get correct lon_u,v,rho values
+                elif 'xi_' in dim_name:  # TODO: get correct lon_u,v,rho values, current value is grid index number
                     if dim_name.replace('xi', 'x') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('xi', 'x')
                         grid_x = self._data.data_vars[coor_var].values[0, :]
@@ -190,11 +190,11 @@ class RomsData:
                         coor_var = dim_name.replace('xi', 'lon')
                         dim_info[dim_name] = {
                             'grid_x': np.arange(1, self._data.data_vars[coor_var].shape[0]+1, dtype=float),
-                            'lower_left_x': 1,
-                            'spacing_x': 1,
+                            'lower_left_x': 1.0,
+                            'spacing_x': 1.0,
                         }
 
-                elif 'eta_' in dim_name:  # TODO: get correct lat_u,v,rho values
+                elif 'eta_' in dim_name:  # TODO: get correct lat_u,v,rho values, current value is grid index number
                     if dim_name.replace('eta', 'y') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('eta', 'y')
                         grid_y = self._data.data_vars[coor_var].values[:, 0]
@@ -208,11 +208,11 @@ class RomsData:
                         coor_var = dim_name.replace('eta', 'lat')
                         dim_info[dim_name] = {
                             'grid_y': np.arange(1, self._data.data_vars[coor_var].shape[0]+1, dtype=float),
-                            'lower_left_y': 1,
-                            'spacing_y': 1,
+                            'lower_left_y': 1.0,
+                            'spacing_y': 1.0,
                         }
 
-                elif 'Nbed' == dim_name:  # TODO: need to get actual Nbed values
+                elif 'Nbed' == dim_name:  # TODO: need to get actual Nbed values, current value is layer number
                     dim_info[dim_name] = {
                         'grid_z': np.arange(1, self._data.dims['Nbed']+1, dtype=float),  # value represent layer number
                     }
