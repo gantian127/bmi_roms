@@ -14,8 +14,8 @@ BmiVar = namedtuple(
     "BmiVar", ["dtype", "itemsize", "nbytes", "units", "location", "grid"]
 )
 
-BmiGridUniformRectilinear = namedtuple(
-    "BmiGridUniformRectilinear", ["shape", "yx_spacing", "yx_of_lower_left", 'grid_x', 'grid_y', 'grid_z']
+BmiGridRectilinear = namedtuple(
+    "BmiGridRectilinear", ["shape", "yx_spacing", "yx_of_lower_left", 'grid_x', 'grid_y', 'grid_z']
 )
 
 
@@ -275,7 +275,7 @@ class BmiRoms(Bmi):
         str
             Type of grid as a string.
         """
-        return "uniform_rectilinear"
+        return "rectilinear"
 
     def get_grid_x(self, grid: int, x: numpy.ndarray) -> numpy.ndarray:
         """Get coordinates of grid nodes in the x direction.
@@ -621,7 +621,7 @@ class BmiRoms(Bmi):
         # grid info
         grid_info = roms.get_grid_info()
         for grid_id, info in grid_info.items():
-            self._grid[grid_id] = BmiGridUniformRectilinear(
+            self._grid[grid_id] = BmiGridRectilinear(
                 shape=info['shape'],
                 yx_spacing=info['yx_spacing'],
                 yx_of_lower_left=info['yx_of_lower_left'],
