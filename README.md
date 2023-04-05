@@ -72,7 +72,7 @@ end_time = data_comp.get_end_time()
 time_step = data_comp.get_time_step()
 time_unit = data_comp.get_time_units()
 time_steps = int((end_time - start_time)/time_step) + 1
-print('start_time:{} \nend_time:{} \ntime_step:{} \ntime_unit:{} \ntime_steps:{}'.format(
+print('start_time:{} \nend_time:{} \ntime_step:{} \ntime_unit:{} \ntime_steps:{} \n'.format(
     start_time, end_time, time_step, time_unit, time_steps))
 
 # get grid info 
@@ -85,10 +85,10 @@ for var_name in data_comp.get_output_var_names():
     grid_shape = np.empty(grid_rank, int)
     data_comp.get_grid_shape(var_grid, grid_shape)
     
-    grid_spacing = np.empty(2)
+    grid_spacing = np.empty(grid_rank)
     data_comp.get_grid_spacing(var_grid, grid_spacing)
     
-    grid_origin = np.empty(2)
+    grid_origin = np.empty(grid_rank)
     data_comp.get_grid_origin(var_grid, grid_origin)
     
     print('grid_id: {}\ngrid_rank: {} \ngrid_size: {} \ngrid_shape: {} \ngrid_spacing: {} \ngrid_origin: {} \n'.format(
@@ -100,10 +100,9 @@ data_comp.get_value(var_name, data)
 data_2D = data.reshape(grid_shape) if grid_rank ==2 else data.reshape(grid_shape)[0]
 
 # plot data
-plt.figure(figsize=(12,6))
+plt.figure(figsize=(12,4))
 im = plt.imshow(data_2D, origin='lower')
 cbar = plt.colorbar(im)
-cbar.set_label(var_name)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('ROMS model data of {}'.format(var_name))
