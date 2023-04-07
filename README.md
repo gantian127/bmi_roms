@@ -4,12 +4,9 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gantian127/bmi_era5/master?filepath=notebooks%2Fbmi_era5.ipynb)
 
 
-bmi_roms package is an implementation of the Basic Model Interface ([BMI](https://bmi-spec.readthedocs.io/en/latest/)) 
-for the [ROMS model](https://confluence.ecmwf.int/display/CKB/ERA5) output dataset. 
-This package can access the ROMS output datasets from THREDDS server and wrap them with BMI for data control and query 
-(currently only support selected variables including XXXXXXX). 
-
-This package is not implemented for people to use but is the key element to convert the ROMS dataset into 
+bmi_roms package is an implementation of the Basic Model Interface ([BMI](https://bmi-spec.readthedocs.io/en/latest/)) for
+the [ROMS model](https://confluence.ecmwf.int/display/CKB/ERA5) datasets. This package wraps the dataset with BMI for 
+data control and query. This package is not implemented for people to use but is the key element to convert the ROMS dataset into 
 a data component ([pymt_roms](https://pymt-era5.readthedocs.io/)) for 
 the [PyMT](https://pymt.readthedocs.io/en/latest/?badge=latest) modeling framework developed 
 by Community Surface Dynamics Modeling System ([CSDMS](https://csdms.colorado.edu/wiki/Main_Page)). 
