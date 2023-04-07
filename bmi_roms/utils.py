@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 import xarray as xr
 import numpy as np
+from datetime import datetime
 
 from .errors import DataError
 
@@ -9,7 +11,7 @@ class RomsData:
 
     """Access data and metadata in a ROMS data file."""
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, download=False):
         """Make a RomsData object.
         Parameters
         ----------
@@ -27,7 +29,7 @@ class RomsData:
         self._dim_info = None
 
         if filename is not None:
-            self.open(filename)
+            self.open(filename, download)
 
     @property
     def data(self):
@@ -53,7 +55,7 @@ class RomsData:
     def time_info(self):
         return self._time_info
 
-    def open(self, filename):
+    def open(self, filename, download=False):
 
         """Load a ROMS data file into a xarray DataArray.
         Parameters.
@@ -65,6 +67,12 @@ class RomsData:
         self._filename = filename
         self._data = xr.open_dataset(self._filename, decode_cf=False)
         self._get_var_grid_list()
+
+        if download:
+            if not os.path.isfile(filename):
+                time_info = datetime.now().strftime('%d%m%YT%H%M%S')
+                file_name = 'romsdata_{}.nc'.format(time_info)
+                self._data.to_netcdf(file_name)
 
         return self.data
 
@@ -177,7 +185,7 @@ class RomsData:
             dim_info = {}
             for dim_name in dim_list:
                 if 's_' in dim_name:
-                    grid_z = np.arange(0, self._data.dims[dim_name], dtype=float)  # index value
+                    grid_z = np.arange(0, self._data.dims[dim_name], dtype=float)  # value represent layer index number
                     dim_info[dim_name] = {
                         'grid_z': grid_z,
                         'origin_z': grid_z[0],
