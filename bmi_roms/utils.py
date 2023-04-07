@@ -176,15 +176,15 @@ class RomsData:
         if dim_list:
             dim_info = {}
             for dim_name in dim_list:
-                if 's_' in dim_name:  # TODO: get actual s_rho and s_w values, current value is layer numer
-                    grid_z = np.arange(1, self._data.dims[dim_name]+1, dtype=float)
+                if 's_' in dim_name:
+                    grid_z = np.arange(0, self._data.dims[dim_name], dtype=float)  # index value
                     dim_info[dim_name] = {
                         'grid_z': grid_z,
                         'origin_z': grid_z[0],
-                        'spacing_z': grid_z[1]-grid_z[0],
+                        'spacing_z': 1.0,
                     }
 
-                elif 'xi_' in dim_name:  # TODO: get correct lon_u,v,rho values, current value is grid index number
+                elif 'xi_' in dim_name:
                     if dim_name.replace('xi', 'x') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('xi', 'x')
                         grid_x = self._data.data_vars[coor_var].values[0, :]
@@ -195,13 +195,14 @@ class RomsData:
                         }
                     elif dim_name.replace('xi', 'lon') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('xi', 'lon')
+                        grid_x = np.arange(0, self._data.data_vars[coor_var].shape[1], dtype=float)  # index value
                         dim_info[dim_name] = {
-                            'grid_x': np.arange(1, self._data.data_vars[coor_var].shape[1]+1, dtype=float),
-                            'origin_x': 1.0,
+                            'grid_x': grid_x,
+                            'origin_x': grid_x[0],
                             'spacing_x': 1.0,
                         }
 
-                elif 'eta_' in dim_name:  # TODO: get correct lat_u,v,rho values, current value is grid index number
+                elif 'eta_' in dim_name:
                     if dim_name.replace('eta', 'y') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('eta', 'y')
                         grid_y = self._data.data_vars[coor_var].values[:, 0]
@@ -213,19 +214,19 @@ class RomsData:
 
                     elif dim_name.replace('eta', 'lat') in self._data.data_vars.keys():
                         coor_var = dim_name.replace('eta', 'lat')
+                        grid_y = np.arange(0, self._data.data_vars[coor_var].shape[0], dtype=float)  # index value
                         dim_info[dim_name] = {
-                            'grid_y': np.arange(1, self._data.data_vars[coor_var].shape[0]+1, dtype=float),
-                            'origin_y': 1.0,
+                            'grid_y': grid_y,
+                            'origin_y': grid_y[0],
                             'spacing_y': 1.0,
                         }
 
-                elif 'Nbed' == dim_name:  # TODO: need to get actual Nbed values, current value is layer number
-                    grid_z = np.arange(1, self._data.dims['Nbed']+1, dtype=float)
+                elif 'Nbed' == dim_name:
+                    grid_z = np.arange(0, self._data.dims['Nbed'], dtype=float)
                     dim_info[dim_name] = {
-                        'grid_z': grid_z,  # value represent layer number
+                        'grid_z': grid_z,  # value represent layer index number
                         'origin_z': grid_z[0],
-                        'spacing_z': grid_z[1]-grid_z[0],
-
+                        'spacing_z': 1.0,
                     }
 
             self._dim_info = dim_info
