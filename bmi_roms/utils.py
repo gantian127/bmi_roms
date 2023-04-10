@@ -62,17 +62,25 @@ class RomsData:
         ----------
         filename : str
             Path or URL to the file to open.
+
+        download : bool
+            Indicate whether to download and save the data as a netCDF file with the provided URL
+
         """
 
+        # load data
         self._filename = filename
         self._data = xr.open_dataset(self._filename, decode_cf=False)
-        self._get_var_grid_list()
 
+        # save data
         if download:
             if not os.path.isfile(filename):
                 time_info = datetime.now().strftime('%d%m%YT%H%M%S')
                 file_name = 'romsdata_{}.nc'.format(time_info)
                 self._data.to_netcdf(file_name)
+
+        # get var and grid list
+        self._get_var_grid_list()
 
         return self.data
 
@@ -84,23 +92,27 @@ class RomsData:
         try:
             grid_info = {}
             for index, dim in enumerate(self._grid_list):
-                x_name = dim[-1]
-                y_name = dim[-2]
-                z_name = dim[-3] if len(dim) > 3 else None
+                if len(dim) > 1:  # suppose dim is 2-3D (exclude time dim)
+                    x_name = dim[-1]
+                    y_name = dim[-2]
+                    z_name = dim[-3] if len(dim) > 2 else None
 
-                grid_info[index] = {
-                    # suppose var is 3 or 4 dim and exclude time dimension to get shape info
-                    'shape': tuple([self.data.dims[dim_name] for dim_name in dim[1:]]),
-                    'grid_spacing': (dim_info[y_name]['spacing_y'], dim_info[x_name]['spacing_x']) if z_name is None else
-                                    (dim_info[z_name]['spacing_z'], dim_info[y_name]['spacing_y'],
-                                     dim_info[x_name]['spacing_x']),
-                    'grid_origin': (dim_info[y_name]['origin_y'], dim_info[x_name]['origin_x']) if z_name is None else
-                                   (dim_info[z_name]['origin_z'], dim_info[y_name]['origin_y'],
-                                    dim_info[x_name]['origin_x']),
-                    'grid_x': dim_info[x_name]['grid_x'],
-                    'grid_y': dim_info[y_name]['grid_y'],
-                    'grid_z': dim_info[z_name]['grid_z'] if z_name is not None else 0,
-                }
+                    grid_info[index] = {
+
+                        'type': "rectilinear",
+                        'shape': tuple([self.data.dims[dim_name] for dim_name in dim]),
+                        'grid_spacing': (dim_info[y_name]['spacing_y'], dim_info[x_name]['spacing_x']) if z_name is None else
+                                        (dim_info[z_name]['spacing_z'], dim_info[y_name]['spacing_y'],
+                                         dim_info[x_name]['spacing_x']),
+                        'grid_origin': (dim_info[y_name]['origin_y'], dim_info[x_name]['origin_x']) if z_name is None else
+                                       (dim_info[z_name]['origin_z'], dim_info[y_name]['origin_y'],
+                                        dim_info[x_name]['origin_x']),
+                        'grid_x': dim_info[x_name]['grid_x'],
+                        'grid_y': dim_info[y_name]['grid_y'],
+                        'grid_z': dim_info[z_name]['grid_z'] if z_name is not None else 0,
+                    }
+                elif len(dim) == 1:
+                    pass  # TODO support scalar value (1D)
 
             self._grid_info = grid_info
 
@@ -111,11 +123,14 @@ class RomsData:
 
     def get_time_info(self):
         try:
-            # identify time dim name and suppose there is only one time dimension
-            time_name = set([dims[0] for dims in self._grid_list]).pop()
-            time_var = self._data.coords[time_name]
+            # identify time dim name and suppose there is only one time dimension used for all variables
+            if self._time_list:
+                time_name = set(self._time_list).pop()
+            else:
+                time_name = 'ocean_time'
 
             # time values are float in BMI time function
+            time_var = self._data.coords[time_name]
             time_info = {
                 'start_time': float(time_var.values[0]),
                 'time_step': 0.0 if len(time_var.values) == 1 else
@@ -143,7 +158,7 @@ class RomsData:
                     'var_name': var_name,
                     'dtype':  str(var.dtype),
                     'itemsize': var.values.itemsize,
-                    'nbytes': var.values[0].nbytes,  # current time step nbytes
+                    'nbytes': var.values[0].nbytes if len(var.dims) >= 3 else var.values.nbytes,  # current time step nbytes
                     'units': var.units if 'units' in var.attrs else 'N/A',
                     'location': 'node',
                     'grid_id': grid_id,
@@ -159,22 +174,41 @@ class RomsData:
     def _get_var_grid_list(self):
         var_list = []
         grid_list = []
+        time_list = []
 
-        # get valid var and grid list
+        # get var, grid, and time list
         for var_name in self._data.data_vars.keys():
             var_obj = self._data.data_vars[var_name]
-            if len(var_obj.shape) >= 3:  # only get var with 3 or 4 dims TODO include 2D var for lat_u, lon_u 2D
+
+            if len(var_obj.shape) in [3, 4]:  # get var with 3-4 dims
                 var_list.append(var_name)
-                if var_obj.dims not in grid_list:
-                    grid_list.append(var_obj.dims)
+                var_dims = var_obj.dims[1:]
+                if var_dims not in grid_list:
+                    grid_list.append(var_dims)
+                time_list.append(var_obj.dims[0])
+
+            elif len(var_obj.shape) == 2:
+                var_dims = var_obj.dims
+                dim_names = [name.split('_')[0] for name in var_dims]
+                if dim_names == ['eta', 'xi']:  # var with 2 dims and defined with geolocation
+                    var_list.append(var_name)
+                    if var_dims not in grid_list:
+                        grid_list.append(var_dims)
+
+            # elif len(var_obj.shape) == 1: #TODO support scalar value
+            #     var_list.append(var_name)
+            #     if 'scalar' not in grid_list:
+            #         grid_list.append('scalar')
 
         # assign grid id to var list
         for index, var_name in enumerate(var_list):
             var_obj = self._data.data_vars[var_name]
-            var_list[index] = [var_name, grid_list.index(var_obj.dims)]
+            var_dims = var_obj.dims if len(var_obj.shape) == 2 else var_obj.dims[1:]
+            var_list[index] = [var_name, grid_list.index(var_dims)]
 
         self._grid_list = tuple(grid_list)
         self._var_list = tuple(var_list)
+        self._time_list = tuple(time_list)
 
     def _get_dim_info(self):
         # get unique dim names
