@@ -15,7 +15,7 @@ BmiVar = namedtuple(
 )
 
 BmiGridRectilinear = namedtuple(
-    "BmiGridRectilinear", ["shape", "grid_spacing", "grid_origin", 'grid_x', 'grid_y', 'grid_z']
+    "BmiGridRectilinear", ["type", "shape", "grid_spacing", "grid_origin", 'grid_x', 'grid_y', 'grid_z']
 )
 
 
@@ -275,7 +275,7 @@ class BmiRoms(Bmi):
         str
             Type of grid as a string.
         """
-        return "rectilinear"
+        return self._grid[grid].type
 
     def get_grid_x(self, grid: int, x: numpy.ndarray) -> numpy.ndarray:
         """Get coordinates of grid nodes in the x direction.
@@ -463,7 +463,10 @@ class BmiRoms(Bmi):
         """
         # return a reference of all the value at current time step. mainly for input data. not useful for scalar value
 
-        return self._data[self._var_name_mapping[name]].values[self._time_index]
+        if len(self._data[self._var_name_mapping[name]].dims) >= 3:
+            return self._data[self._var_name_mapping[name]].values[self._time_index]
+        else:
+            return self._data[self._var_name_mapping[name]].values
 
     def get_var_grid(self, name: str) -> int:
         """Get grid identifier for the given variable.
@@ -622,6 +625,7 @@ class BmiRoms(Bmi):
         grid_info = roms.get_grid_info()
         for grid_id, info in grid_info.items():
             self._grid[grid_id] = BmiGridRectilinear(
+                type=info['type'],
                 shape=info['shape'],
                 grid_spacing=info['grid_spacing'],
                 grid_origin=info['grid_origin'],
