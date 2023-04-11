@@ -1,7 +1,7 @@
 # bmi_roms
 [![Documentation Status](https://readthedocs.org/projects/bmi_roms/badge/?version=latest)](https://bmi_roms.readthedocs.io/en/latest/?badge=latest)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_roms/blob/master/LICENSE.txt)
-
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gantian127/bmi_roms/master?filepath=notebooks%2Fbmi_roms.ipynb)
 
 bmi_roms package is an implementation of the Basic Model Interface ([BMI](https://bmi-spec.readthedocs.io/en/latest/)) for
 the [ROMS model](https://www.myroms.org/) datasets. This package wraps the dataset with BMI for 
@@ -43,7 +43,7 @@ $ pip install -e .
 #### Demonstration of how to use BmiRoms
 
 Learn more details from the [tutorial notebook](https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb) 
-provided in this package.
+provided in this package and launch binder to run the notebook.
 
 ```python
 from bmi_roms import BmiRoms
@@ -114,7 +114,7 @@ plt.ylabel('Latitude [degree_north]')
 plt.title('ROMS model data of time-averaged salinity')
 ```
 
-![plot](docs/source/_static/plot.png)
+![plot](docs/source/_static/contour_plot.png)
 
 
 
