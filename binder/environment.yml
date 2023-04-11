@@ -1,0 +1,14 @@
+name: bmi_roms
+channels:
+  - conda-forge
+dependencies:
+  - bmipy
+  - netcdf4
+  - numpy
+  - pyyaml
+  - requests
+  - xarray
+  - matplotlib
+
+
+
