@@ -40,7 +40,7 @@ After downloading the source code, run the following command from top-level fold
 $ pip install -e .
 ```
 
-#### Demonstration of how to use BmiRoms
+#### Code Example
 
 Learn more details from the [tutorial notebook](https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb) 
 provided in this package and launch binder to run the notebook.
