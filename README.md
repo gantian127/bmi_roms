@@ -1,16 +1,18 @@
 # bmi_roms
-[![Documentation Status](https://readthedocs.org/projects/bmi_era5/badge/?version=latest)](https://bmi_era5.readthedocs.io/en/latest/?badge=latest)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_era5/blob/master/LICENSE.txt)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gantian127/bmi_era5/master?filepath=notebooks%2Fbmi_era5.ipynb)
+[![Documentation Status](https://readthedocs.org/projects/bmi_roms/badge/?version=latest)](https://bmi_roms.readthedocs.io/en/latest/?badge=latest)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_roms/blob/master/LICENSE.txt)
 
 
 bmi_roms package is an implementation of the Basic Model Interface ([BMI](https://bmi-spec.readthedocs.io/en/latest/)) for
-the [ROMS model](https://confluence.ecmwf.int/display/CKB/ERA5) datasets. This package wraps the dataset with BMI for 
+the [ROMS model](https://www.myroms.org/) datasets. This package wraps the dataset with BMI for 
 data control and query. This package is not implemented for people to use but is the key element to convert the ROMS dataset into 
-a data component ([pymt_roms](https://pymt-era5.readthedocs.io/)) for 
+a data component ([pymt_roms](https://pymt-roms.readthedocs.io/)) for 
 the [PyMT](https://pymt.readthedocs.io/en/latest/?badge=latest) modeling framework developed 
 by Community Surface Dynamics Modeling System ([CSDMS](https://csdms.colorado.edu/wiki/Main_Page)). 
- 
+
+The current implementation supports 2D, 3D and 4D ROMS output datasets defined with geospatial and/or time dimensions 
+(e.g., dataset defined with dimensions as [time, s_rho, eta_rho, xi_rho])
+
 If you have any suggestion to improve the current function, please create a github issue 
 [here](https://github.com/gantian127/bmi_roms/issues).
 
@@ -59,7 +61,6 @@ for var_name in  data_comp.get_output_var_names():
     var_grid = data_comp.get_var_grid(var_name)
     var_itemsize = data_comp.get_var_itemsize(var_name)
     var_nbytes = data_comp.get_var_nbytes(var_name)
-    
     print('variable_name: {} \nvar_unit: {} \nvar_location: {} \nvar_type: {} \nvar_grid: {} \nvar_itemsize: {}' 
             '\nvar_nbytes: {} \n'. format(var_name, var_unit, var_location, var_type, var_grid, var_itemsize, var_nbytes))
 
@@ -72,7 +73,7 @@ time_steps = int((end_time - start_time)/time_step) + 1
 print('start_time:{} \nend_time:{} \ntime_step:{} \ntime_unit:{} \ntime_steps:{} \n'.format(
     start_time, end_time, time_step, time_unit, time_steps))
 
-# get grid info 
+# get variable grid info 
 for var_name in data_comp.get_output_var_names():
     var_grid = data_comp.get_var_grid(var_name)
     
@@ -88,21 +89,29 @@ for var_name in data_comp.get_output_var_names():
     grid_origin = np.empty(grid_rank)
     data_comp.get_grid_origin(var_grid, grid_origin)
     
-    print('grid_id: {}\ngrid_rank: {} \ngrid_size: {} \ngrid_shape: {} \ngrid_spacing: {} \ngrid_origin: {} \n'.format(
-        var_grid, grid_rank, grid_size, grid_shape, grid_spacing, grid_origin))
+    print('var_name: {} \ngrid_id: {}\ngrid_rank: {} \ngrid_size: {} \ngrid_shape: {} \ngrid_spacing: {} \ngrid_origin: {} \n'.format(
+        var_name, var_grid, grid_rank, grid_size, grid_shape, grid_spacing, grid_origin))
 
-# get variable data
-data = np.empty(grid_size, var_type)
-data_comp.get_value(var_name, data)
-data_2D = data.reshape(grid_shape) if grid_rank ==2 else data.reshape(grid_shape)[0]
+# get variable data 
+data = np.empty(1026080, 'float64')
+data_comp.get_value('time-averaged salinity', data)
+data_3D = data.reshape([40, 106, 242])
 
-# plot data
-plt.figure(figsize=(12,4))
-im = plt.imshow(data_2D, origin='lower')
-cbar = plt.colorbar(im)
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('ROMS model data of {}'.format(var_name))
+# get lon and lat data
+lat = np.empty(25652, 'float64')
+data_comp.get_value('latitude of RHO-points', lat)
+
+lon = np.empty(25652, 'float64')
+data_comp.get_value('longitude of RHO-points', lon)
+
+# make a contour plot
+fig = plt.figure(figsize=(10,7))
+im = plt.contourf(lon.reshape([106, 242]), lat.reshape([106, 242]), data_3D[0], levels=36)
+fig.colorbar(im)
+plt.axis('equal')
+plt.xlabel('Longitude [degree_east]')
+plt.ylabel('Latitude [degree_north]')
+plt.title('ROMS model data of time-averaged salinity')
 ```
 
 ![plot](docs/source/_static/plot.png)
