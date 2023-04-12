@@ -17,6 +17,9 @@ class RomsData:
         ----------
         filename : str, optional
             Path or URL (e.g., OPeNDAP data url) to the file to open.
+
+        downlad : bool, optional
+            Indicate whether to download and save the data as a netCDF file with the provided URL
         """
 
         self._filename = None
