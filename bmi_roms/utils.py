@@ -27,6 +27,7 @@ class RomsData:
         self._grid_info = None
         self._time_info = None
         self._dim_info = None
+        self._download_file = None
 
         if filename is not None:
             self.open(filename, download)
@@ -55,6 +56,10 @@ class RomsData:
     def time_info(self):
         return self._time_info
 
+    @property
+    def download_file(self):
+        return self._download_file
+
     def open(self, filename, download=False):
 
         """Load a ROMS data file into a xarray DataArray.
@@ -77,7 +82,9 @@ class RomsData:
             if not os.path.isfile(filename):
                 time_info = datetime.now().strftime('%d%m%YT%H%M%S')
                 file_name = 'romsdata_{}.nc'.format(time_info)
-                self._data.to_netcdf(file_name)
+                file_path = os.path.join(os.getcwd(), file_name)
+                self._data.to_netcdf(file_path)
+                self._download_file = file_path
 
         # get var and grid list
         self._get_var_grid_list()
