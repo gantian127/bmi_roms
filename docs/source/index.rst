@@ -127,6 +127,19 @@ You can also launch binder to test and run the code below. |binder|
 
 |plot|
 
+
+Parameters
+++++++++++++++++++++++++++++++++++++
+
+A `configuration file <https://github.com/gantian127/bmi_roms/blob/master/notebooks/config_file.yaml>`_ is required
+to initialize an instance of the ROMS data component. This file includes the following parameters:
+
+* **filename**: Path or URL (e.g., OPeNDAP data url) of the ROMS model data to open.
+* **download**: Bool value as True or False to indicate whether to download and save the data as a netCDF file with the
+  provided URL. The dataset will be saved in the working directory with a file name including the time information
+  (e.g., romsdata_12032023T162045.nc)
+
+
 .. links:
 
 .. |binder| image:: https://mybinder.org/badge_logo.svg
