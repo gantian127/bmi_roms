@@ -19,9 +19,6 @@ If you have any suggestion to improve the current function, please create a gith
 `here <https://github.com/gantian127/bmi_roms/issues>`_.
 
 
-Getting Started
-===============
-
 Installation
 ++++++++++++
 
@@ -49,12 +46,11 @@ After downloading the source code, run the following command from top-level fold
     $ pip install -e .
 
 
-Code Example
-++++++++++++++++++++++++++++++++++++
+Quick Start
++++++++++++++++++
 
-Learn more details of the example from the
-`tutorial notebook <https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb>`_ provided in this package.
-You can also launch binder to test and run the code below. |binder|
+You can learn more details from the
+`tutorial notebook <https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb>`_.
 
 .. code-block:: python
 
@@ -125,6 +121,8 @@ You can also launch binder to test and run the code below. |binder|
    plt.ylabel('Latitude [degree_north]')
    plt.title('ROMS model data of time-averaged salinity')
 
+   # finalize the data component
+   data_comp.finalize()
 |plot|
 
 
@@ -141,9 +139,6 @@ to initialize an instance of the ROMS data component. This file includes the fol
 
 
 .. links:
-
-.. |binder| image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/gantian127/bmi_roms/master?filepath=notebooks%2Fbmi_roms.ipynb
 
 .. |plot| image:: _static/contour_plot.png
 
