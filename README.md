@@ -1,7 +1,6 @@
 # bmi_roms
 [![Documentation Status](https://readthedocs.org/projects/bmi_roms/badge/?version=latest)](https://bmi-roms.readthedocs.io/en/latest/?badge=latest)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_roms/blob/master/LICENSE.txt)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gantian127/bmi_roms/master?filepath=notebooks%2Fbmi_roms.ipynb)
 
 bmi_roms package is an implementation of the Basic Model Interface ([BMI](https://bmi-spec.readthedocs.io/en/latest/)) for
 the [ROMS model](https://www.myroms.org/) datasets. This package wraps the dataset with BMI for 
@@ -16,11 +15,10 @@ The current implementation supports 2D, 3D and 4D ROMS output datasets defined w
 If you have any suggestion to improve the current function, please create a github issue 
 [here](https://github.com/gantian127/bmi_roms/issues).
 
-## Get Started
 
-#### Install package
+### Install package
 
-##### Stable Release
+#### Stable Release
 
 The bmi_roms package and its dependencies can be installed with pip
 ```
@@ -32,7 +30,7 @@ or conda
 $ conda install -c conda-forge bmi_roms 
 ```
 
-##### From Source
+#### From Source
 
 After downloading the source code, run the following command from top-level folder 
 (the one that contains setup.py) to install bmi_roms.
@@ -40,10 +38,9 @@ After downloading the source code, run the following command from top-level fold
 $ pip install -e .
 ```
 
-#### Code Example
+### Quick Start
 
-Learn more details from the [tutorial notebook](https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb) 
-provided in this package and launch binder to run the notebook.
+You can learn more details from the [tutorial notebook](https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb).
 
 ```python
 from bmi_roms import BmiRoms
@@ -112,6 +109,9 @@ plt.axis('equal')
 plt.xlabel('Longitude [degree_east]')
 plt.ylabel('Latitude [degree_north]')
 plt.title('ROMS model data of time-averaged salinity')
+
+# finalize the data component
+data_comp.finalize()
 ```
 
 ![plot](docs/source/_static/contour_plot.png)
