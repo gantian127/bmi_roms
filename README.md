@@ -1,4 +1,5 @@
 # bmi_roms
+[![DOI](https://zenodo.org/badge/623706059.svg)](https://zenodo.org/doi/10.5281/zenodo.10368896)
 [![Documentation Status](https://readthedocs.org/projects/bmi_roms/badge/?version=latest)](https://bmi-roms.readthedocs.io/en/latest/?badge=latest)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_roms/blob/master/LICENSE.txt)
 
