@@ -5,12 +5,12 @@
 :target: https://bmi-roms.readthedocs.io/en/latest/
 ```
 
-[bmi_roms][bmi_roms-github] package is an implementation of the 
+[bmi_roms][bmi_roms-github] package is an implementation of the
 [Basic Model Interface (BMI)][bmi-docs] for the [ROMS model][roms_model] datasets.
 This package wraps the dataset with BMI for data control and query.
-This package is not implemented for people to use but is the key element to convert 
+This package is not implemented for people to use but is the key element to convert
 the ROMS dataset into a data component [pymt_roms][pymt_roms] for
-the [PyMT][pymt-docs] modeling framework developed by Community Surface Dynamics 
+the [PyMT][pymt-docs] modeling framework developed by Community Surface Dynamics
 Modeling System ([CSDMS][csdms]).
 
 The current implementation supports 2D, 3D and 4D ROMS output datasets defined with geospatial and/or time dimensions
@@ -124,15 +124,18 @@ plt.title("ROMS model data of time-averaged salinity")
 data_comp.finalize()
 ```
 
+```{image} _static/contour_plot.png
+```
+
 # Parameter settings
 
-A [configuration file][config_file] is required to initialize an instance of the ROMS 
+A [configuration file][config_file] is required to initialize an instance of the ROMS
 data component. This file includes the following parameters:
 
 * **filename**: Path or URL (e.g., OPeNDAP data url) of the ROMS model data to open.
-* **download**: Bool value as True or False to indicate whether to download and save 
-  the data as a netCDF file with the provided URL. The dataset will be saved in the 
-  working directory with a file name including the time information (e.g., 
+* **download**: Bool value as True or False to indicate whether to download and save
+  the data as a netCDF file with the provided URL. The dataset will be saved in the
+  working directory with a file name including the time information (e.g.,
   romsdata_12032023T162045.nc)
 
 <!-- links -->
