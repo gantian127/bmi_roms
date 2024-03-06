@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 from collections import namedtuple
-from typing import Tuple
 
 import numpy
 import yaml
-
+from bmi_roms.utils import RomsData
 from bmipy import Bmi
-
-from .utils import RomsData
 
 
 BmiVar = namedtuple(
@@ -15,7 +13,8 @@ BmiVar = namedtuple(
 )
 
 BmiGridRectilinear = namedtuple(
-    "BmiGridRectilinear", ["type", "shape", "grid_spacing", "grid_origin", 'grid_x', 'grid_y', 'grid_z']
+    "BmiGridRectilinear",
+    ["type", "shape", "grid_spacing", "grid_origin", "grid_x", "grid_y", "grid_z"],
 )
 
 
@@ -63,7 +62,7 @@ class BmiRoms(Bmi):
         float
             The current model time.
         """
-        return self._time['time_value'][self._time_index]
+        return self._time["time_value"][self._time_index]
 
     def get_end_time(self) -> float:
         """End time of the model.
@@ -72,9 +71,11 @@ class BmiRoms(Bmi):
         float
             The maximum model time.
         """
-        return self._time['end_time']
+        return self._time["end_time"]
 
-    def get_grid_face_edges(self, grid: int, face_edges: numpy.ndarray) -> numpy.ndarray:
+    def get_grid_face_edges(
+        self, grid: int, face_edges: numpy.ndarray
+    ) -> numpy.ndarray:
         """Get the face-edge connectivity.
 
         Parameters
@@ -325,7 +326,7 @@ class BmiRoms(Bmi):
         z[:] = self._grid[grid].grid_z
         return z
 
-    def get_input_var_names(self) -> Tuple[str]:
+    def get_input_var_names(self) -> tuple[str]:
         """List of a model's input variables.
         Input variable names must be CSDMS Standard Names, also known
         as *long variable names*.
@@ -353,7 +354,7 @@ class BmiRoms(Bmi):
         """
         return len(self._input_var_names)
 
-    def get_output_var_names(self) -> Tuple[str]:
+    def get_output_var_names(self) -> tuple[str]:
         """List of a model's output variables.
         Output variable names must be CSDMS Standard Names, also known
         as *long variable names*.
@@ -382,7 +383,7 @@ class BmiRoms(Bmi):
         float
             The model start time.
         """
-        return self._time['start_time']
+        return self._time["start_time"]
 
     def get_time_step(self) -> float:
         """Current time step of the model.
@@ -392,7 +393,7 @@ class BmiRoms(Bmi):
         float
             The time step used in model.
         """
-        return self._time['time_step']
+        return self._time["time_step"]
 
     def get_time_units(self) -> str:
         """Time units of the model.
@@ -404,7 +405,7 @@ class BmiRoms(Bmi):
         -----
         CSDMS uses the UDUNITS standard from Unidata.
         """
-        return self._time['time_units']
+        return self._time["time_units"]
 
     def get_value(self, name: str, dest: numpy.ndarray) -> numpy.ndarray:
         """Get a copy of values of the given variable.
@@ -443,7 +444,8 @@ class BmiRoms(Bmi):
         array_like
             Value of the model variable at the given location.
         """
-        # return the value at current time step with given index in 1D or 2D grid. when it is scalar no need for ind
+        # return the value at current time step with given index in 1D or 2D grid.
+        # when it is scalar no need for ind
         dest[:] = self.get_value_ptr(name).reshape(-1)[inds]
         return dest
 
@@ -461,7 +463,8 @@ class BmiRoms(Bmi):
         array_like
             A reference to a model variable.
         """
-        # return a reference of all the value at current time step. mainly for input data. not useful for scalar value
+        # return a reference of all the value at current time step.
+        # mainly for input data. not useful for scalar value
 
         if len(self._data[self._var_name_mapping[name]].dims) >= 3:
             return self._data[self._var_name_mapping[name]].values[self._time_index]
@@ -595,10 +598,10 @@ class BmiRoms(Bmi):
         with placeholder values is used by the BMI.
         """
         if config_file:
-            with open(config_file, "r") as fp:
-                conf = yaml.safe_load(fp).get('bmi-roms', {})
+            with open(config_file) as fp:
+                conf = yaml.safe_load(fp).get("bmi-roms", {})
         else:
-            conf = {'filename': None}
+            conf = {"filename": None}
 
         # dataset
         roms = RomsData(**conf)
@@ -612,27 +615,29 @@ class BmiRoms(Bmi):
         self._output_var_names = tuple(var_info.keys())
         for name, info in var_info.items():
             self._var[name] = BmiVar(
-                dtype=str(info['dtype']),
-                itemsize=info['itemsize'],
-                nbytes=info['nbytes'],  # nbytes for current time step value
-                units=info['units'],
-                location=info['location'],  # location on a grid (node, face, edge)
-                grid=info['grid_id'],  # grid id number
+                dtype=str(info["dtype"]),
+                itemsize=info["itemsize"],
+                nbytes=info["nbytes"],  # nbytes for current time step value
+                units=info["units"],
+                location=info["location"],  # location on a grid (node, face, edge)
+                grid=info["grid_id"],  # grid id number
             )
-            self._var_name_mapping[name] = info['var_name']  # TODO: translate var name into CSDMS standard name
+            self._var_name_mapping[name] = info[
+                "var_name"
+            ]  # TODO: translate var name into CSDMS standard name
 
         # grid info
         grid_info = roms.get_grid_info()
         for grid_id, info in grid_info.items():
             self._grid[grid_id] = BmiGridRectilinear(
-                type=info['type'],
-                shape=info['shape'],
-                grid_spacing=info['grid_spacing'],
-                grid_origin=info['grid_origin'],
-                grid_x=info['grid_x'],
-                grid_y=info['grid_y'],
-                grid_z=info['grid_z'],
-                )
+                type=info["type"],
+                shape=info["shape"],
+                grid_spacing=info["grid_spacing"],
+                grid_origin=info["grid_origin"],
+                grid_x=info["grid_x"],
+                grid_y=info["grid_y"],
+                grid_z=info["grid_z"],
+            )
 
     def set_value(self, name: str, values: numpy.ndarray) -> None:
         """Specify a new value for a model variable.
