@@ -1,47 +1,51 @@
-# bmi_roms
-[![DOI](https://zenodo.org/badge/623706059.svg)](https://zenodo.org/doi/10.5281/zenodo.10368896)
-[![Documentation Status](https://readthedocs.org/projects/bmi_roms/badge/?version=latest)](https://bmi-roms.readthedocs.io/en/latest/?badge=latest)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_roms/blob/master/LICENSE.txt)
+```{image} _static/logo.png
+:align: center
+:alt: bmi_roms
+:scale: 16%
+:target: https://bmi-roms.readthedocs.io/en/latest/
+```
 
-bmi_roms package is an implementation of the Basic Model Interface ([BMI](https://bmi-spec.readthedocs.io/en/latest/)) for
-the [ROMS model](https://www.myroms.org/) datasets. This package wraps the dataset with BMI for
-data control and query. This package is not implemented for people to use but is the key element to convert the ROMS dataset into
-a data component ([pymt_roms](https://pymt-roms.readthedocs.io/)) for
-the [PyMT](https://pymt.readthedocs.io/en/latest/?badge=latest) modeling framework developed
-by Community Surface Dynamics Modeling System ([CSDMS](https://csdms.colorado.edu/wiki/Main_Page)).
+[bmi_roms][bmi_roms-github] package is an implementation of the
+[Basic Model Interface (BMI)][bmi-docs] for the [ROMS model][roms_model] datasets.
+This package wraps the dataset with BMI for data control and query.
+This package is not implemented for people to use but is the key element to convert
+the ROMS dataset into a data component [pymt_roms][pymt_roms] for
+the [PyMT][pymt-docs] modeling framework developed by Community Surface Dynamics
+Modeling System ([CSDMS][csdms]).
 
 The current implementation supports 2D, 3D and 4D ROMS output datasets defined with geospatial and/or time dimensions
 (e.g., dataset defined with dimensions as [time, s_rho, eta_rho, xi_rho])
 
-If you have any suggestion to improve the current function, please create a github issue
-[here](https://github.com/gantian127/bmi_roms/issues).
+# Installation
 
+**Stable Release**
 
-### Install package
+The bmi_roms package and its dependencies can be installed with either *pip* or *conda*,
 
-#### Stable Release
-
-The bmi_roms package and its dependencies can be installed with pip
+````{tab} pip
+```console
+pip install bmi_roms
 ```
-$ pip install bmi_roms
-```
+````
 
-or with conda.
+````{tab} conda
+```console
+conda install -c conda-forge bmi_roms
 ```
-$ conda install -c conda-forge bmi_roms
-```
+````
 
-#### From Source
+**From Source**
 
 After downloading the source code, run the following command from top-level folder
 to install bmi_roms.
-```
-$ pip install -e .
+
+```console
+pip install -e .
 ```
 
-### Quick Start
+# Quick Start
 
-You can learn more details from the [tutorial notebook](https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb).
+You can learn more details from the [tutorial notebook][bmi_roms-notebook].
 
 ```python
 from bmi_roms import BmiRoms
@@ -120,4 +124,26 @@ plt.title("ROMS model data of time-averaged salinity")
 data_comp.finalize()
 ```
 
-![plot](docs/source/_static/contour_plot.png)
+```{image} _static/contour_plot.png
+```
+
+# Parameter settings
+
+A [configuration file][config_file] is required to initialize an instance of the ROMS
+data component. This file includes the following parameters:
+
+* **filename**: Path or URL (e.g., OPeNDAP data url) of the ROMS model data to open.
+* **download**: Bool value as True or False to indicate whether to download and save
+  the data as a netCDF file with the provided URL. The dataset will be saved in the
+  working directory with a file name including the time information (e.g.,
+  romsdata_12032023T162045.nc)
+
+<!-- links -->
+[bmi-docs]: https://bmi.readthedocs.io
+[csdms]: https://csdms.colorado.edu
+[config_file]: https://github.com/gantian127/bmi_roms/blob/master/notebooks/config_file.yaml
+[roms_model]: https://www.myroms.org/
+[pymt-docs]: https://pymt.readthedocs.io
+[bmi_roms-github]: https://github.com/gantian127/bmi_roms/
+[bmi_roms-notebook]: https://github.com/gantian127/bmi_roms/blob/master/notebooks/bmi_roms.ipynb
+[pymt_roms]: https://pymt-roms.readthedocs.io/
