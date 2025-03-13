@@ -1,5 +1,5 @@
 # bmi_roms
-[![DOI](https://zenodo.org/badge/623706059.svg)](https://zenodo.org/doi/10.5281/zenodo.10368896)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10368896.svg)](https://zenodo.org/doi/10.5281/zenodo.10368896)
 [![Documentation Status](https://readthedocs.org/projects/bmi_roms/badge/?version=latest)](https://bmi-roms.readthedocs.io/en/latest/?badge=latest)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/gantian127/bmi_roms/blob/master/LICENSE.md)
 
@@ -38,6 +38,17 @@ to install bmi_roms.
 ```
 $ pip install -e .
 ```
+
+### Citation
+Please include the following references when citing this software package:
+
+Gan, T., Tucker, G.E., Hutton, E.W.H., Piper, M.D., Overeem, I., Kettner, A.J.,
+Campforts, B., Moriarty, J.M., Undzis, B., Pierce, E., McCready, L., 2024:
+CSDMS Data Components: data–model integration tools for Earth surface processes
+modeling. Geosci. Model Dev., 17, 2165–2185. https://doi.org/10.5194/gmd-17-2165-2024
+
+Gan, T. (2023). CSDMS ROMS Data Component. Zenodo. 
+https://doi.org/10.5281/zenodo.10368896
 
 ### Quick Start
 
